@@ -88,6 +88,28 @@ app.post("/block-user", async (req, res) => {
       .json({ success: false, message: "Error occurred while blocking user." });
   }
 });
+app.post("/unblock-user", async (req, res) => {
+  const { chatId } = req.body;
+
+  try {
+    // Find the subscriber by chatId and update the blocked status
+    const Subs = await subscriber.findOne({ chatId: chatId });
+
+    if (Subs) {
+      Subs.blocked = false;
+      await Subs.save();
+      res.json({ success: true });
+    } else {
+      res.status(404).json({ success: false, message: "User not found." });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Error occurred while unblocking user.",
+    });
+  }
+});
 app.post("/delete-user", async (req, res) => {
   const { chatId } = req.body;
 
@@ -172,6 +194,12 @@ async function handleLocation(msg) {
 
   let chat_id = msg.from.id;
 
+  const subs = await subscriber.findOne({ chatId: chat_id });
+  if (subs?.blocked) {
+    bot.sendMessage(chat_id, "you have been blocked from this service");
+    return;
+  }
+
   console.log(lat, lon);
   const coordsApiUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}`;
   const coordsCityUrl = `https://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&appid=${apiKey}`;
@@ -209,7 +237,7 @@ async function handleLocation(msg) {
           ", " +
           getNameByCode(cityJsonData[0].country),
       });
-      console.log(newSubscriber);
+      // console.log(newSubscriber);
       // Save the user to the database
       const savedUser = await newSubscriber.save();
       console.log("User saved:", savedUser);
@@ -235,12 +263,27 @@ async function handleMessage(msg) {
     *Welcome to Daily Weather 🌤️*
 
     📌 share your *location* 📌
-    to get Daily weather information
+    to subscribe to Daily Weather Bot
     
-    Also you can get other city
-    weathers by texting city name
+    ⭐ after subscription you can get city
+    weathers 
+
+    ➡️ by texting city name
+    ➡️ by sharing your location
+
+    ⭐ you can change your last location 
+    ➡️ by resharing your location
     `;
     bot.sendMessage(chat_id, welcomeMsg, { parse_mode: "Markdown" });
+    return;
+  }
+  const subs = await subscriber.findOne({ chatId: chat_id });
+  if (!subs) {
+    bot.sendMessage(chat_id, "share your location to subscribe");
+    return;
+  }
+  if (subs.blocked) {
+    bot.sendMessage(chat_id, "you have been blocked from this service");
     return;
   }
 
@@ -264,7 +307,7 @@ async function handleMessage(msg) {
     );
     // Use the HTML parse_mode option to format the message as HTML
     bot.sendMessage(chat_id, weatherMessage, { parse_mode: "Markdown" });
-    console.log(weatherMessage);
+    // console.log(weatherMessage);
   } catch (error) {
     let errorMessage = "City Not Found";
     console.error(errorMessage);
