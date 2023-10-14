@@ -43,7 +43,9 @@ router.get("/requests", requiresAuth(), async function (req, res, next) {
   const email = req?.oidc?.user?.email || null;
   const existAdmin = await admin.findOne({ email });
   const isAdmin = existAdmin?.isAdmin || false;
-  const adminRequests = await admin.find({ requested: true, isAdmin: false });
+  const adminRequests = await admin
+    .find({ requested: true, isAdmin: false })
+    .sort({ updatedAt: -1 });
 
   console.log(adminRequests);
 

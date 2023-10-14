@@ -77,20 +77,30 @@
     }
   }
 
-  function requestAdminAccess(email,requested){
-    if (confirm(requested?"Want apply For Admin Role?":"Want to Cancel Request For Admin Role?")) {
+  function requestAdminAccess(email, requested) {
+    if (
+      confirm(
+        requested
+          ? "Want apply For Admin Role?"
+          : "Want to Cancel Request For Admin Role?"
+      )
+    ) {
       // Make an AJAX request to your server to update the deleted status
       fetch("/apply-admin", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email ,requested}),
+        body: JSON.stringify({ email, requested }),
       })
         .then((response) => response.json())
         .then((data) => {
           if (data.success) {
-            alert(requested?`your email ID ${email} has been applied`:`your email ID ${email} request was successfully cancelled`);
+            alert(
+              requested
+                ? `your email ID ${email} has been applied`
+                : ` email ID ${email} request was successfully cancelled`
+            );
             // Optionally, you can update the UI to reflect the deleted status.
           } else {
             alert("Failed");
@@ -102,4 +112,32 @@
         });
     }
   }
+
+  function makeAdmin(email) {
+    if (confirm(`Are you sure you want to make ${email} admin?`)) {
+      // Make an AJAX request to your server to update the deleted status
+      fetch("/make-admin", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success) {
+            alert(`User with email Id ${email} has been made Admin.`);
+            // Optionally, you can update the UI to reflect the deleted status.
+          } else {
+            alert("Failed to make user admin.");
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          alert("An error occurred while user converting to Admin.");
+        });
+    }
+  }
+
+
 </script>

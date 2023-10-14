@@ -1,30 +1,49 @@
 <%- include('partials/header') -%> <% if (locals.isAuthenticated) { %> <%
 if(locals.isAdmin) { %>
 <div class="container">
-  <h1 class="text-4xl mb-4">Requested For Admin Access</h1>
+  <% if(locals.adminRequests.length){%>
+  <h1 class="text-4xl mb-4" style="text-align: center">
+    Requests For Admin Access
+  </h1>
   <div>
     <table>
       <tr>
-        <th>email</th>
-
+        <th>Name</th>
+        <th>Email</th>
+        <th>Time</th>
         <th>accept</th>
         <th>reject</th>
       </tr>
       <% locals.adminRequests.forEach(element => { %>
       <tr>
+        <td><%= element.name%></td>
         <td><%= element.email%></td>
+        <td><%= element.updatedAt%></td>
         <td>
-          <button style="background-color: rgba(9, 102, 9, 0.877)">
+          <button
+            style="background-color: rgba(9, 102, 9, 0.877)"
+            onclick="makeAdmin('<%= element.email %>')"
+          >
             Accept
           </button>
         </td>
         <td>
-          <button>Reject</button>
+          <button onclick="requestAdminAccess('<%= element.email %>',false)">
+            Reject
+          </button>
         </td>
       </tr>
       <% }); %>
     </table>
   </div>
+  <%}else{%>
+  <h1 class="text-4xl mb-4" style="text-align: center">
+    No Requests Pending
+  </h1>
+  <h1 class="text-4xl mb-4" style="text-align: center">
+    😄😄😄😄😄
+  </h1>
+  <%}%>
 </div>
 <% } else { %>
 <p>You are not an Admin</p>
