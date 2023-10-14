@@ -78,6 +78,7 @@ app.post("/block-user", async (req, res) => {
     if (Subs) {
       Subs.blocked = true;
       await Subs.save();
+      bot.sendMessage(chatId, "You are blocked by Weather Bot Admin");
       res.json({ success: true });
     } else {
       res.status(404).json({ success: false, message: "User not found." });
@@ -99,6 +100,7 @@ app.post("/unblock-user", async (req, res) => {
     if (Subs) {
       Subs.blocked = false;
       await Subs.save();
+      bot.sendMessage(chatId, "You are unblocked by Weather Bot Admin");
       res.json({ success: true });
     } else {
       res.status(404).json({ success: false, message: "User not found." });
@@ -119,6 +121,10 @@ app.post("/delete-user", async (req, res) => {
     const Subs = await subscriber.deleteOne({ chatId: chatId });
 
     if (Subs) {
+      bot.sendMessage(
+        chatId,
+        "Your Subscription has been deleted. Reshare your Location to resubscribe "
+      );
       res.json({ success: true });
     } else {
       res.status(404).json({ success: false, message: "User not found." });
@@ -153,12 +159,10 @@ app.post("/apply-admin", async (req, res) => {
   } catch (error) {
     // Handle any errors that occur during the update operation
     console.error("Error updating admin:", error);
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Error occurred while updating admin.",
-      });
+    res.status(500).json({
+      success: false,
+      message: "Error occurred while updating admin.",
+    });
   }
 });
 
@@ -185,12 +189,26 @@ app.post("/make-admin", async (req, res) => {
   } catch (error) {
     // Handle any errors that occur during the update operation
     console.error("Error updating admin:", error);
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: "Error occurred while updating admin.",
-      });
+    res.status(500).json({
+      success: false,
+      message: "Error occurred while updating admin.",
+    });
+  }
+});
+
+app.post("/send-direct-message", async (req, res) => {
+  const { chatId, message } = req.body;
+
+  try {
+    bot.sendMessage(chatId, message);
+    res.json({ success: true });
+  } catch (error) {
+    // Handle any errors that occur during the update operation
+    console.error("Error sending direct message:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error occurred while sending message.",
+    });
   }
 });
 
@@ -284,10 +302,21 @@ async function handleLocation(msg) {
 
     // Use the HTML parse_mode option to format the message as HTML
     bot.sendMessage(chat_id, weatherMessage, { parse_mode: "Markdown" });
-    console.log(weatherMessage);
+    // console.log(weatherMessage);
     try {
       // Remove the user by chatId
       const result = await subscriber.deleteOne({ chatId: chat_id });
+      const userPhotos = await bot.getUserProfilePhotos(chat_id, { limit: 1 });
+      let imageUrl = null;
+      if (userPhotos.total_count > 0) {
+        // Access the first photo's file_id
+        const fileId = userPhotos.photos[0][0].file_id;
+        // Use the getFileLink method to construct the image URL
+        imageUrl = await bot.getFileLink(fileId);
+        console.log("File link of the user's profile photo:", imageUrl);
+      } else {
+        console.log("No profile photos found for the user.");
+      }
       const newSubscriber = new subscriber({
         chatId: chat_id,
         name: msg.from.first_name + " " + msg.from.last_name,
@@ -300,6 +329,7 @@ async function handleLocation(msg) {
           cityJsonData[0].state +
           ", " +
           getNameByCode(cityJsonData[0].country),
+        imageUrl,
       });
       // console.log(newSubscriber);
       // Save the user to the database
@@ -316,7 +346,7 @@ async function handleLocation(msg) {
 }
 
 async function handleMessage(msg) {
-  // console.log(msg);
+  console.log(msg);
   if (!msg.text) {
     return;
   }

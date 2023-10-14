@@ -15,6 +15,7 @@ router.get("/", async function (req, res, next) {
     const newAdmin = new admin({
       email: req.oidc.user.email,
       name: req.oidc.user.name,
+      picture: req.oidc.user.picture || null,
     });
     // console.log(newAdmin);
     // Save the user to the database

@@ -3,18 +3,27 @@
 <div class="container">
   <table>
     <tr>
-      <th>Chat ID</th>
+      <th>Picture</th>
       <th>Name</th>
-      <th>username</th>
+      <th>Chat ID</th>
       <th>Last Location</th>
-      <th>block / unblock</th>
+      <th>Block / Unblock</th>
       <th>Delete user</th>
+      <th>Direct Message</th>
     </tr>
     <% locals.result.forEach(element => { %>
     <tr>
-      <td><%= element.chatId%></td>
+      <td>
+        <img
+          src="<%= element.imageUrl%>"
+          alt="profile photo"
+          onerror="this.src='/photos/profile.jpeg'"
+          width="50px"
+        />
+      </td>
+
       <td><%= element.name%></td>
-      <td><%= element.username%></td>
+      <td><%= element.chatId%></td>
       <td><%= element.location %></td>
       <td>
         <% if (element.blocked) { %>
@@ -25,11 +34,20 @@
           Unblock
         </button>
         <% } else { %>
-        <button onclick="blockUser('<%= element.chatId %>')">Block</button>
+        <button onclick="blockUser('<%= element.chatId %>')">Block 🙅‍♂️</button>
         <% } %>
       </td>
       <td>
-        <button onclick="deleteUser('<%= element.chatId %>')">Delete</button>
+        <button onclick="deleteUser('<%= element.chatId %>')">Delete 🚮</button>
+      </td>
+
+      <td>
+        <button
+          style="background-color: rgb(13, 110, 110)"
+          onclick="sendDirectMessage('<%= element.chatId %>','<%= element.name %>')"
+        >
+          Send 📩
+        </button>
       </td>
     </tr>
     <% }); %>

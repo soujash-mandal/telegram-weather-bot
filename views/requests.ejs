@@ -8,6 +8,7 @@ if(locals.isAdmin) { %>
   <div>
     <table>
       <tr>
+        <th>Photo</th>
         <th>Name</th>
         <th>Email</th>
         <th>Time</th>
@@ -16,6 +17,7 @@ if(locals.isAdmin) { %>
       </tr>
       <% locals.adminRequests.forEach(element => { %>
       <tr>
+        <td><img src="<%= element.picture%>" alt="profile pic" /></td>
         <td><%= element.name%></td>
         <td><%= element.email%></td>
         <td><%= element.updatedAt%></td>

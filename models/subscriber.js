@@ -21,6 +21,9 @@ const subscriberSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  imageUrl: {
+    type: String,
+  },
 });
 
 // Create and export the User model

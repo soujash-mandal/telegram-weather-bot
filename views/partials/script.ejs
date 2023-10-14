@@ -139,5 +139,28 @@
     }
   }
 
-
+  function sendDirectMessage(chatId, name) {
+    let message = prompt("Write Something For " + name);
+    if (message == null) return;
+    fetch("/send-direct-message", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ chatId, message }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          alert(`Direct Message for ${name} sent successfully`);
+          // Optionally, you can update the UI to reflect the deleted status.
+        } else {
+          alert("Failed to send message");
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        alert("An error occurred while sending message");
+      });
+  }
 </script>
