@@ -35,12 +35,17 @@
     <% }); %>
   </table>
 </div>
-<% } else { %>
-<button>Request Admin Access</button>
-<% } %>
-<!-- <p>
-  You are logged in. <a href="/profile" class="underline">View your profile</a>.
-</p> -->
-<% } else { %>
+<% } else { %> <% if (locals.existAdmin.requested) {%>
+<button onclick="requestAdminAccess('<%= locals.email %>',false)">
+  Cancel Admin Request
+</button>
+<% } else{%>
+<button
+  onclick="requestAdminAccess('<%= locals.email %>',true)"
+  style="background-color: rgba(9, 102, 9, 0.877)"
+>
+  Request Admin Access
+</button>
+<%}%> <% } %> <% } else { %>
 <p>You are not logged in. <a href="/login" class="underline">Login</a>.</p>
 <% } %> <%- include('partials/script') %> <%- include('partials/footer') -%>

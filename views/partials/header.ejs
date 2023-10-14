@@ -13,9 +13,9 @@
     />
     <style>
       .container {
-        /* background-color:aqua ;
-        width: 90px;
-        margin: auto; */
+        /* background-color:aqua ; */
+        width: 90%;
+        margin: auto;
       }
       table {
         border-collapse: collapse;
@@ -65,6 +65,11 @@
             >Dashboard</a
           >
           <% if (locals.user) { %>
+          <a
+            href="/requests"
+            class="block mt-4 lg:inline-block lg:mt-0 text-gray-300 hover:text-white mr-4"
+            >Requests</a
+          >
           <a
             href="/profile"
             class="block mt-4 lg:inline-block lg:mt-0 text-gray-300 hover:text-white mr-4"

@@ -8,14 +8,13 @@ router.get("/", async function (req, res, next) {
   const email = req?.oidc?.user?.email || null;
   const existAdmin = await admin.findOne({ email });
 
-
   const isAdmin = existAdmin?.isAdmin || false;
-  console.log(isAdmin);
+  // console.log(isAdmin);
 
   if (!existAdmin && email) {
-    console.log("jdhkjhs");
     const newAdmin = new admin({
       email: req.oidc.user.email,
+      name: req.oidc.user.name,
     });
     // console.log(newAdmin);
     // Save the user to the database
@@ -28,6 +27,8 @@ router.get("/", async function (req, res, next) {
     isAuthenticated: req.oidc.isAuthenticated(),
     isAdmin,
     result,
+    email,
+    existAdmin,
   });
 });
 
@@ -35,6 +36,22 @@ router.get("/profile", requiresAuth(), async function (req, res, next) {
   res.render("profile", {
     userProfile: JSON.stringify(req.oidc.user, null, 2),
     title: "Profile page",
+  });
+});
+
+router.get("/requests", requiresAuth(), async function (req, res, next) {
+  const email = req?.oidc?.user?.email || null;
+  const existAdmin = await admin.findOne({ email });
+  const isAdmin = existAdmin?.isAdmin || false;
+  const adminRequests = await admin.find({ requested: true, isAdmin: false });
+
+  console.log(adminRequests);
+
+  res.render("requests", {
+    title: "Admin Request page",
+    isAuthenticated: req.oidc.isAuthenticated(),
+    isAdmin,
+    adminRequests,
   });
 });
 

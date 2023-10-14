@@ -1,0 +1,33 @@
+<%- include('partials/header') -%> <% if (locals.isAuthenticated) { %> <%
+if(locals.isAdmin) { %>
+<div class="container">
+  <h1 class="text-4xl mb-4">Requested For Admin Access</h1>
+  <div>
+    <table>
+      <tr>
+        <th>email</th>
+
+        <th>accept</th>
+        <th>reject</th>
+      </tr>
+      <% locals.adminRequests.forEach(element => { %>
+      <tr>
+        <td><%= element.email%></td>
+        <td>
+          <button style="background-color: rgba(9, 102, 9, 0.877)">
+            Accept
+          </button>
+        </td>
+        <td>
+          <button>Reject</button>
+        </td>
+      </tr>
+      <% }); %>
+    </table>
+  </div>
+</div>
+<% } else { %>
+<p>You are not an Admin</p>
+<% } } else { %>
+<p>You are not logged in. <a href="/login" class="underline">Login</a>.</p>
+<% } %> <%- include('partials/script') %> <%- include('partials/footer') -%>

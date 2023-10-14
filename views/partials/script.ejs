@@ -76,4 +76,30 @@
         });
     }
   }
+
+  function requestAdminAccess(email,requested){
+    if (confirm(requested?"Want apply For Admin Role?":"Want to Cancel Request For Admin Role?")) {
+      // Make an AJAX request to your server to update the deleted status
+      fetch("/apply-admin", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email ,requested}),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success) {
+            alert(requested?`your email ID ${email} has been applied`:`your email ID ${email} request was successfully cancelled`);
+            // Optionally, you can update the UI to reflect the deleted status.
+          } else {
+            alert("Failed");
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          alert("An error occurred");
+        });
+    }
+  }
 </script>

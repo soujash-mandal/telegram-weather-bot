@@ -14,6 +14,7 @@ const generateWeatherMessage = require("./tasks/userMessage");
 const { getNameByCode } = require("./tasks/weatherMessageFormatter");
 const { default: axios } = require("axios");
 const subscriber = require("./models/subscriber");
+const admin = require("./models/admin");
 
 dotenv.load();
 
@@ -128,6 +129,35 @@ app.post("/delete-user", async (req, res) => {
       .status(500)
       .json({ success: false, message: "Error occurred while deleting user." });
   }
+});
+app.post("/apply-admin", async (req, res) => {
+  const { email ,requested} = req.body;
+
+  try {
+    // Find the admin by email and update the 'requested' field to true
+    const updatedAdmin = await admin.findOneAndUpdate(
+      { email: email }, // Replace 'email' with the actual email you want to use as the query
+      { $set: { requested } }, // Use $set to update the 'requested' field
+      { new: true } // To get the updated document as a result
+    );
+  
+    if (updatedAdmin) {
+      // The update was successful, and updatedAdmin contains the updated document
+      console.log("admin updated:", updatedAdmin);
+      res.json({ success: true });
+    } else {
+      // admin not found, handle accordingly
+      console.log("admin not found.");
+      res.status(404).json({ success: false, message: "admin not found." });
+    }
+  } catch (error) {
+    // Handle any errors that occur during the update operation
+    console.error("Error updating admin:", error);
+    res
+      .status(500)
+      .json({ success: false, message: "Error occurred while updating admin." });
+  }
+
 });
 
 app.use("/", router);
