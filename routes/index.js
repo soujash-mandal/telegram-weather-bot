@@ -34,9 +34,14 @@ router.get("/", async function (req, res, next) {
 });
 
 router.get("/profile", requiresAuth(), async function (req, res, next) {
+  const email = req?.oidc?.user?.email || null;
+  const existAdmin = await admin.findOne({ email });
+  const isAdmin = existAdmin?.isAdmin || false;
+
   res.render("profile", {
     userProfile: JSON.stringify(req.oidc.user, null, 2),
     title: "Profile page",
+    isAdmin,
   });
 });
 

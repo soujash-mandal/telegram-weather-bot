@@ -17,7 +17,7 @@ if(locals.isAdmin) { %>
       </tr>
       <% locals.adminRequests.forEach(element => { %>
       <tr>
-        <td><img src="<%= element.picture%>" alt="profile pic" /></td>
+        <td><img src="<%= element.picture%>" alt="profile pic" width="50px"/></td>
         <td><%= element.name%></td>
         <td><%= element.email%></td>
         <td><%= element.updatedAt%></td>

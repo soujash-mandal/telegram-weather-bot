@@ -54,16 +54,27 @@
   </table>
 </div>
 <% } else { %> <% if (locals.existAdmin.requested) {%>
-<button onclick="requestAdminAccess('<%= locals.email %>',false)">
-  Cancel Admin Request
-</button>
+<div style="text-align: center">
+  <button
+    onclick="requestAdminAccess('<%= locals.email %>',false)"
+    style="margin-top: 200px"
+  >
+    Cancel Admin Request
+  </button>
+</div>
 <% } else{%>
-<button
-  onclick="requestAdminAccess('<%= locals.email %>',true)"
-  style="background-color: rgba(9, 102, 9, 0.877)"
->
-  Request Admin Access
-</button>
+<div style="text-align: center">
+  <button
+    onclick="requestAdminAccess('<%= locals.email %>',true)"
+    style="
+      background-color: rgba(9, 102, 9, 0.877);
+      margin-left: auto;
+      margin-top: 200px;
+    "
+  >
+    Request Admin Access
+  </button>
+</div>
 <%}%> <% } %> <% } else { %>
 <p>You are not logged in. <a href="/login" class="underline">Login</a>.</p>
 <% } %> <%- include('partials/script') %> <%- include('partials/footer') -%>

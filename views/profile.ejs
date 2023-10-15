@@ -1,16 +1,27 @@
 <%- include('partials/header') -%>
 
-<h1 class="text-4xl mb-4">Welcome <%= user.given_name %></h1>
-
-<% if (user.picture) { %>
-<img class="block py-3 px-3" src="<%= user.picture %>" width="300" />
-<% } %>
-
-<p class="py-3">
-  This is the content of <code >req.user</code>.<br />
-  <strong>Note:</strong> <code >_raw</code> and
-  <code>_json</code> properties have been omitted.
-</p>
+<!-- <h1 class="text-4xl mb-4">Welcome <%= user.given_name %></h1> -->
+<div
+  style="
+    /* background: rgba(128, 128, 128, 0.534); */
+    align-items: center;
+    text-align: center;
+  "
+>
+  <% if (user.picture) { %>
+  <img
+    class="block py-3 px-3"
+    src="<%= user.picture %>"
+    width="200"
+    style="border-radius: 50%; margin: auto; padding-top: 30px"
+  />
+  <% } %>
+  <h1 class="text-4xl">
+    <% if (locals.isAdmin) { %> 🤖  <%=
+    user.name %> <span class="admin-badge">Admin</span> <% } else { %> 🤖 <%= user.name %> <% } %>
+  </h1>
+  <h1 class="text-2xl mb-4">📧 <%= user.email %></h1>
+</div>
 
 <pre class="block bg-gray-300 p-4 text-sm overflow-scroll">
 <%= userProfile %></pre
